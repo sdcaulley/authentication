@@ -9,6 +9,7 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   res.render('home');
 });
+
 app.listen(port, () => {
   console.log(`app is now listening for requests on port ${port}.`);
 });
