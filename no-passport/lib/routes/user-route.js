@@ -39,6 +39,7 @@ router
             error: 'Password is incorrect.'
           };
         }
+        return user;
       })
       .then(user => {
         userObj = user;
@@ -49,6 +50,7 @@ router
       })
       .catch(err => {
         console.log('login err: ', err);
+        res.send(err.error);
       });
   });
 
