@@ -1,15 +1,25 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const users = require('./routes/user-route');
+const Koa = require('koa');
+const route = require('koa-route');
+const middleware = require('./middleware');
+const user = require('./routes/user-route');
 
-//set up middleware
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+const app = new Koa();
+app.keys = ['my-secret-key'];
+app.use(middleware());
 
-//set up routes
-app.use('/', users);
+//routes
+app.use(route.post('/user/registration', user.userRegistration));
+app.use(route.post('/user/login', user.userLogin));
+
+//error handling
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.body = err.message;
+    ctx.app.emit('error', err, ctx);
+  }
+});
 
 module.exports = app;

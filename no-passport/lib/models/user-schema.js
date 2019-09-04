@@ -6,32 +6,35 @@ let UserSchema = new mongoose.Schema({
   login: {
     type: String,
     unique: true,
-    require: true
+    required: true
   },
-  hash: {
+  password: {
     type: String,
-    rquire: true
-  },
-  salt: {
-    type: String,
-    require: true
+    required: true
   },
   displayName: {
     type: String,
-    require: true
+    required: true
   }
 });
 
-UserSchema.virtual('password').set(function(password) {
-  this.hash = bcrypt.hash(password, 10, (err) => {
-    console.log('bcrypt err: ', err);
+UserSchema.pre('save', function(next) {
+  console.log('inside pre');
+  const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.hash(user.password, 10, function(err, hash) {
+    if (err) {
+      return next(err);
+    }
+    user.password = hash;
+    next();
   });
 });
 
 UserSchema.methods.comparePassword = function(password) {
-  return bcrypt.compare(password, this.hash, (err) => {
-    console.log('compare password err: ', err);
-  });
+  return bcrypt.compare(password, this.password);
 };
 
 UserSchema.plugin(uniqueValidator);
