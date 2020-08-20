@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^2.2.3",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "import-dir": "0.0.1",
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
